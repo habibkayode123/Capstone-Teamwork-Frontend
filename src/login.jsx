@@ -1,7 +1,7 @@
 import React from 'react';
-import { useEffect, useState } from 'react'
-import { BrowserRouter as Router, Link, Route,Redirect } from 'react-router-dom'
-import { Button, Checkbox, Form } from 'semantic-ui-react';
+import { useState } from 'react'
+import { Route,Redirect } from 'react-router-dom'
+import { Button, Form } from 'semantic-ui-react';
 import 'semantic-ui-css/semantic.min.css'
 
 function Login() {
@@ -22,10 +22,11 @@ let     [go,setGo] = useState(false)
         .then((data) => {
             if(data.status !== "success")
             {
-console.log("nooo")
+            return    window.location.reload()
             }
-            console.log(data)
+            
             localStorage.setItem("token",data.token)
+            localStorage.setItem('jobrole',data.jobrole)
             setGo(true)
         
         })

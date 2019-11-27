@@ -35,8 +35,12 @@ function Article(props){
       })},[])
       
       let submitComment = (e)=>{
-          
-        fetch(`http://localhost:3002/api/v1/gifs/${datas.data.id}/comment`,{
+        let url=`http://localhost:3002/api/v1/articles/${datas.data.id}/comment`
+        if(image){
+          url =`http://localhost:3002/api/v1/gifs/${datas.data.id}/comment`
+        }
+           
+        fetch(url,{
             method:"POST",
             headers:{
                 'Content-Type':"application/x-www-form-urlencoded",
@@ -46,11 +50,15 @@ function Article(props){
     })
     .then(response=>response.json())
     .then(suc =>console.log(suc))
-      }
+  window.location.reload()    
+  }
 
 
      if(datas == undefined) return (<div>loading</div>)
-     if(image === false) {return(<div><Feed>
+     if(image === false) {
+       return(
+       <div>
+         <Feed>
         <Feed.Event>
           <Feed.Label> User
           </Feed.Label>
@@ -59,7 +67,45 @@ function Article(props){
            {datas.data.article}
           </Feed.Content>
         </Feed.Event>
-      </Feed></div>)}
+      </Feed>
+      <Comment.Group>
+    <Header as='h3' dividing>
+      Comments
+    </Header>
+    {
+comm !== undefined &&  (
+    <div>
+        {comm.map((value,index)=>
+    ( <Comment>
+      <Comment.Avatar src='https://react.semantic-ui.com/images/avatar/small/matt.jpg' />
+      <Comment.Content>
+        <Comment.Author as='a'><User id={value.person_id}/></Comment.Author>
+        <Comment.Metadata>
+          <div>{value.created_on}</div>
+        </Comment.Metadata>
+        <Comment.Text>{value.comment}</Comment.Text>
+        <Comment.Actions>
+          <Comment.Action>Reply</Comment.Action>
+        </Comment.Actions>
+      </Comment.Content>
+      </Comment>)
+      )
+    }
+</div>)
+       
+}
+<Form  method="POST" onSubmit={(e)=>{
+    e.preventDefault()
+    submitComment(e)
+    console.log(comment)}}>
+      <TextArea name="comm" value ={comment} onChange={(e) =>{
+        
+        setComment(e.target.value)}}/>
+      <Button content='Add Reply' labelPosition='left' icon='edit' primary />
+    </Form>
+    </Comment.Group>
+      </div>
+      )}
      return(
          <div>{<Feed>
             <Feed.Event>
